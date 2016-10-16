@@ -8,7 +8,16 @@
         body {
             font-family: sans-serif;
         }
-    </style>
+        .ContactForm > input,
+        .ContactForm > textarea {
+          display: block;
+          width: 240px;
+          padding: 4px 8px;
+          margin-bottom: 8px;
+          border-radius: 3px;
+          border: 1px solid #888;
+          font-size: 14px;
+        }    </style>
 </head>
 
 <body>
@@ -35,7 +44,7 @@
         description: "Shallow to the point of transparency."
     }];
 
-    var newContact = {name: "", email: "", description: ""};
+    var _newContact = {name: "", email: "", description: ""};
 
     var ContactForm = React.createClass({
         propTypes: {
@@ -44,7 +53,7 @@
 
         render: function() {
             return (
-                React.createElement('form', {} ,
+                React.createElement('form', {className: "ContactForm"} ,
                     React.createElement('input', {type: "text", placeholder: "Name (required)", value: this.props.contact.name}),
                     React.createElement('br', {}),
                     React.createElement('input', {type: "text", placeholder: "Email", value: this.props.contact.email}),
@@ -67,18 +76,37 @@
         render: function() {
             return (
                 React.createElement('li', {
-                        className: 'Contact'
+                        className: 'ContactItem'
                     },
                     React.createElement('h2', {
-                        className: 'Contact-name'
+                        className: 'ContactItem-name'
                     }, this.props.name),
                     React.createElement('a', {
+                        className: 'ContactItem-email',
                         href: 'mailto:' + this.props.email
                     }, this.props.email),
-                    React.createElement('div', {}, this.props.description)
+                    React.createElement('div', { className: 'ContactItem-description'}, this.props.description)
                 )
             );
         },
+    });
+
+    var ContactView = React.createClass({
+        propTypes: {
+            contacts: React.PropTypes.array.isRequired,
+            newContact: React.PropTypes.object.isRequired,
+        },
+
+        render: function() {
+            return (
+                React.createElement('div', { className: "ContactView"},
+                        React.createElement('h1', { className:"ContactView-Header"}, "New contacts"),
+                        React.createElement(ContactForm, {contact: this.props.newContact}),
+                        React.createElement('h1', { className:"ContactView-Header"}, "Contacts"),
+                        React.createElement('ul', { className:"ContactView-List"}, this.props.contacts)
+                    )
+                );
+        }
     });
 
     var listElements = contacts.filter(function(contact) {
@@ -87,13 +115,7 @@
         return React.createElement(ContactItem, contact);
     });
 
-    var rootElement =
-        React.createElement('div', {},
-            React.createElement('h1', {}, "New contacts"),
-            React.createElement(ContactForm, {contact: newContact}),
-            React.createElement('h1', {}, "Contacts"),
-            React.createElement('ul', {}, listElements)
-        );
+    var rootElement = React.createElement(ContactView, {contacts: listElements, newContact: _newContact})
 
 
     ReactDOM.render(rootElement, document.getElementById('react-app'));
