@@ -22,21 +22,25 @@
     var contacts = [{
         key: 1,
         name: "Sara Kay",
-        email: "sara@fictional.com"
+        email: "sara@fictional.com",
+        description: "Superhot coder."
     }, {
         key: 2,
-        name: "Janitor"
+        name: "Janitor",
+        description: "Cleans up everyone's mess but their own."
     }, {
         key: 3,
         name: "Holo Graph",
-        email: "holo@fictional.com"
+        email: "holo@fictional.com",
+        description: "Shallow to the point of transparency."
     }];
 
     var ContactItem = React.createClass({
         propTypes: {
             key: React.PropTypes.number.isRequired,
             name: React.PropTypes.string.isRequired,
-            email: React.PropTypes.string
+            email: React.PropTypes.string,
+            description: React.PropTypes.string,
       },
 
       render: function() {
@@ -45,7 +49,8 @@
             React.createElement('h2', {className: 'Contact-name'}, this.props.name),
             React.createElement('a', {
                 href: 'mailto:' + this.props.email
-            }, this.props.email)
+            }, this.props.email),
+            React.createElement('div', {}, this.props.description)
           )
         )
       },
