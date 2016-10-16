@@ -5,9 +5,9 @@
     <meta charset="UTF-8" />
     <title>This is a react app</title>
     <style>
-       body  {
-           font-family: sans-serif;
-       }
+        body {
+            font-family: sans-serif;
+        }
     </style>
 </head>
 
@@ -35,24 +35,50 @@
         description: "Shallow to the point of transparency."
     }];
 
+    var newContact = {name: "", email: "", description: ""};
+
+    var ContactForm = React.createClass({
+        propTypes: {
+            contact: React.PropTypes.object.isRequired
+        },
+
+        render: function() {
+            return (
+                React.createElement('form', {} ,
+                    React.createElement('input', {type: "text", placeholder: "Name (required)", value: this.props.contact.name}),
+                    React.createElement('br', {}),
+                    React.createElement('input', {type: "text", placeholder: "Email", value: this.props.contact.email}),
+                    React.createElement('br', {}),
+                    React.createElement('textarea', {rows: "3", cols: "50", placeholder: "Description", value: this.props.contact.description}),
+                    React.createElement('br', {}),
+                    React.createElement('button', { type: 'submit'}, "Add contact")
+                )
+            );
+        },
+    });
+
     var ContactItem = React.createClass({
         propTypes: {
             name: React.PropTypes.string.isRequired,
             email: React.PropTypes.string,
             description: React.PropTypes.string,
-      },
+        },
 
-      render: function() {
-        return (
-          React.createElement('li', {className: 'Contact'},
-            React.createElement('h2', {className: 'Contact-name'}, this.props.name),
-            React.createElement('a', {
-                href: 'mailto:' + this.props.email
-            }, this.props.email),
-            React.createElement('div', {}, this.props.description)
-          )
-        )
-      },
+        render: function() {
+            return (
+                React.createElement('li', {
+                        className: 'Contact'
+                    },
+                    React.createElement('h2', {
+                        className: 'Contact-name'
+                    }, this.props.name),
+                    React.createElement('a', {
+                        href: 'mailto:' + this.props.email
+                    }, this.props.email),
+                    React.createElement('div', {}, this.props.description)
+                )
+            );
+        },
     });
 
     var listElements = contacts.filter(function(contact) {
@@ -63,9 +89,12 @@
 
     var rootElement =
         React.createElement('div', {},
+            React.createElement('h1', {}, "New contacts"),
+            React.createElement(ContactForm, {contact: newContact}),
             React.createElement('h1', {}, "Contacts"),
             React.createElement('ul', {}, listElements)
         );
+
 
     ReactDOM.render(rootElement, document.getElementById('react-app'));
 </script>
