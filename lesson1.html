@@ -6,7 +6,7 @@
     <title>This is a react app</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: tahoma, sans-serif;
         }
         .ContactForm > input,
         .ContactForm > textarea {
@@ -28,6 +28,22 @@
     <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
 </body>
 <script>
+    var assign = function(obj, prop, value) {
+    if (typeof prop === "string")
+        prop = prop.split(".");
+
+    if (prop.length > 1) {
+        var e = prop.shift();
+        assign(obj[e] =
+                 Object.prototype.toString.call(obj[e]) === "[object Object]"
+                 ? obj[e]
+                 : {},
+               prop,
+               value);
+    } else
+        obj[prop[0]] = value;
+    };
+
     var contacts = [{
         key: 1,
         name: "Sara Kay",
@@ -48,17 +64,28 @@
 
     var ContactForm = React.createClass({
         propTypes: {
-            contact: React.PropTypes.object.isRequired
+            contact: React.PropTypes.object.isRequired,
+            onChange: React.PropTypes.func.isRequired
         },
 
         render: function() {
+            var onPropChange = function(name, event) {
+                assign(this.props.contact, name, event.target.value);
+                this.setState({contact: this.props.contact});
+                this.props.onChange(this.props.contact);
+            }.bind(this);
+
             return (
                 React.createElement('form', {className: "ContactForm"} ,
-                    React.createElement('input', {type: "text", placeholder: "Name (required)", value: this.props.contact.name}),
+                    React.createElement('input', {type: "text", placeholder: "Name (required)", value: this.props.contact.name,
+                        onChange: function(event) { onPropChange("name", event); }}),
                     React.createElement('br', {}),
-                    React.createElement('input', {type: "text", placeholder: "Email", value: this.props.contact.email}),
+                    React.createElement('input', {type: "text", placeholder: "Email", value: this.props.contact.email,
+                        onChange: function(event) { onPropChange("email", event); }}),
                     React.createElement('br', {}),
-                    React.createElement('textarea', {rows: "3", cols: "50", placeholder: "Description", value: this.props.contact.description}),
+                    React.createElement('textarea', {rows: "3", cols: "50", placeholder: "Description",
+                        value: this.props.contact.description,
+                        onChange: function(event) { onPropChange("description", event); }}),
                     React.createElement('br', {}),
                     React.createElement('button', { type: 'submit'}, "Add contact")
                 )
@@ -98,10 +125,14 @@
         },
 
         render: function() {
+            function contactChanged(contact) {
+                console.log(contact);
+            };
+
             return (
                 React.createElement('div', { className: "ContactView"},
-                        React.createElement('h1', { className:"ContactView-Header"}, "New contacts"),
-                        React.createElement(ContactForm, {contact: this.props.newContact}),
+                        React.createElement('h2', { className:"ContactView-Header"}, "New contact"),
+                        React.createElement(ContactForm, {contact: this.props.newContact, onChange: contactChanged}),
                         React.createElement('h1', { className:"ContactView-Header"}, "Contacts"),
                         React.createElement('ul', { className:"ContactView-List"}, this.props.contacts)
                     )
@@ -116,7 +147,6 @@
     });
 
     var rootElement = React.createElement(ContactView, {contacts: listElements, newContact: _newContact})
-
 
     ReactDOM.render(rootElement, document.getElementById('react-app'));
 </script>
