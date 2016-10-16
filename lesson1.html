@@ -32,17 +32,29 @@
         email: "holo@fictional.com"
     }];
 
+    var ContactItem = React.createClass({
+        propTypes: {
+            key: React.PropTypes.number.isRequired,
+            name: React.PropTypes.string.isRequired,
+            email: React.PropTypes.string
+      },
+
+      render: function() {
+        return (
+          React.createElement('li', {className: 'Contact', key: this.props.key},
+            React.createElement('h2', {className: 'Contact-name'}, this.props.name),
+            React.createElement('a', {
+                href: 'mailto:' + this.props.email
+            }, this.props.email)
+          )
+        )
+      },
+    });
+
     var listElements = contacts.filter(function(contact) {
         return contact.email;
     }).map(function(contact) {
-        return React.createElement('li', {
-                key: contact.key
-            },
-            React.createElement('h2', {}, contact.name),
-            React.createElement('a', {
-                href: 'mailto:' + contact.email
-            }, contact.email)
-        )
+        return React.createElement(ContactItem, contact);
     });
 
     var rootElement =
